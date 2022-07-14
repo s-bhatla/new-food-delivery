@@ -3,12 +3,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Auth from "./routes/Auth"
+import AddItems from './routes/AddItems';
+import Cart from './routes/Cart';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <BrowserRouter>
+    <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="auth" element={<Auth />} />
+        <Route path="additems" element={<AddItems />} />
+        <Route path="cart" element={<Cart />} />
+    </Routes>
+    </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,23 +1,79 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { db } from "./firebase/firebase.js";
+import { collection, onSnapshot } from "firebase/firestore";
+import ListItems from "./components/ListItems";
+import { auth } from "./firebase/firebase";
+import {onAuthStateChanged} from "firebase/auth";
+import {getDoc, doc} from "firebase/firestore"
+
 
 function App() {
+  const [foodlist, setfoodlist] = useState([]);
+  const [userid, setuserid] = useState("");
+  const [isadmin, setisadmin] = useState(false);
+  
+  useEffect(() => {
+    async function getuser(){
+      const snap = await getDoc(doc(db, 'users', userid))
+      if (snap.exists()) {
+        console.log("snapdatajust", snap.data())
+        if(snap.data().admin){
+          setisadmin(true)
+        }
+        else{
+          setisadmin(false)
+        }
+      }
+      else {
+        console.log("No such document")
+      }
+    }
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        setuserid(uid)
+        console.log("Some user is logged in as ", uid);
+        getuser()
+      } else {
+        console.log("No user is signed in");
+      }
+    });
+    
+    
+    const foodcolref = collection(db, "foods");
+    onSnapshot(foodcolref, (snapshot) => {
+      let data = []; 
+      snapshot.docs.map((doc) => 
+        data.push(doc.data())
+      );
+      setfoodlist(data)
+    });
+    console.log("Is the user admin", isadmin);
+  }, [userid, isadmin]);
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App p-2">
+      <h2>FireFood Store</h2>
+      <Link to="/auth">Login/Signup</Link>
+      <div className="menu">
+        <h4>Menu</h4>
+          <div>
+            {foodlist?.map((item) => 
+              <div>
+                <ListItems name={item.name} imgurl={item.image_url} cost={item.cost} veg={item.veg}/>
+                {/* {console.log("itemname -> ", item.name)} */}
+              </div>
+            )
+            }
+          </div>
+      </div>
+      {isadmin ? <button><Link to="/additems">Add Dishes</Link></button> : <></>}
+      <br></br>
+      <Link to="/cart">Go to Checkout</Link>
     </div>
   );
 }
