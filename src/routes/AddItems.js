@@ -11,6 +11,8 @@ const AddItems = () => {
   const [url, seturl] = useState("")
   console.log(dishname, veg, cost, url)
 
+  
+
   const submitDish= (e) => {
     e.preventDefault()
     addDoc(collection(db, "foods"), {
