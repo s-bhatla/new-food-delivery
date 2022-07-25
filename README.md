@@ -1,1 +1,1 @@
-This is a Demo App I created to solidify my understanding of Redux and Firebase fundamentals. The functionality is almost complete, but there is no frontend to speak of as of now. This project is still a work in progress ;)
+This is a demo App I created to solidify my understanding of Redux and Firebase fundamentals. The functionality is almost complete, but there is no frontend to speak of as of now. This project is still a work in progress ;)
